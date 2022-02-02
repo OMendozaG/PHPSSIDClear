@@ -1,7 +1,7 @@
 ﻿using PHPSSIDClear;
 using System.IO;
 
-var Ini = new IniFile("Settings.ini");
+var Ini = new IniFile(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Settings.ini");
 
 int Deleted = 0;
 string Path = Ini.Read("Path");
@@ -37,5 +37,9 @@ void ProcessDir(string Folder) {
 }
 
 Console.WriteLine("Starting PHPSIDClear on " + Path + " with " + Duration.ToString() + " duration");
-ProcessDir(Path);
+await Task.Run(() => {
+	Thread.CurrentThread.Priority = ThreadPriority.Lowest;
+	ProcessDir(Path);
+});
+
 Console.WriteLine("End! Deleted: " + Deleted.ToString() + " files");
